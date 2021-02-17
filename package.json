@@ -1,0 +1,29 @@
+{
+  "name": "low-profile-streaming-service",
+  "version": "1.0.0",
+  "description": "FFMPEG streaming service that runs in background with low overhead.",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "nodemon": "nodemon main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CamMcRae/low-profile-streaming-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CamMcRae/low-profile-streaming-service/issues"
+  },
+  "homepage": "https://github.com/CamMcRae/low-profile-streaming-service#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "json5": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
