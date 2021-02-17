@@ -111,18 +111,15 @@ const streamOutput = async () => {
       }
     }
 
-    console.log(
-      warn(
-        `Selected ingest servers:\nMain: ${ingestServer.main}\nBackup: ${ingestServer.backup}`
-      )
-    );
+    console.log(warn(`Selected ingest servers:\nMain: ${ingestServer.main}\nBackup: ${ingestServer.backup}`));
 
     // create output string
-    let outputSettings = `-f flv "rtmp:${ingestServer.main}"`;
+    let outputSettings = `-f flv ${ingestServer.main}`;
     resolve(outputSettings);
   });
 };
 
+// main streaming function
 const beginStream = (_outputString) => {
   // recursively builds the config string as laid out in settings.json
   const constructString = (_obj) => {
@@ -146,6 +143,7 @@ const beginStream = (_outputString) => {
     }
     return str.replace(/\ +/g, " ");
   };
+
   // if custom settings doesnt exist, use defaults
   let json_in
   if (fs.existsSync('./settings_custom.json')) {
@@ -156,6 +154,12 @@ const beginStream = (_outputString) => {
 
   let ff_settings = constructString(json_in) + _outputString;
   if (flags.verbose) console.log(verb(ff_settings));
+
+  // cli stdio
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
 
   // start readline and pause when ffmpeg outputs
   const proc = exec(`ffmpeg ${ff_settings}`);
@@ -169,13 +173,9 @@ const beginStream = (_outputString) => {
   });
 
   proc.on("close", (code) => {
-    console.log(`FFMPEG Stopped\nExit code: ${code}`);
-  });
-
-  // cli stdio
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
+    console.log(warn("FFMPEG Stopped"));
+    console.log(`Exit code: ${code}`);
+    rl.close();
   });
 
   // scans for stop

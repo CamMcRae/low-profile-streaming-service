@@ -1,0 +1,6 @@
+{
+  youtube: {
+    main: "rtmp://a.rtmp.youtube.com/live2/%d",
+    backup: "rtmp://b.rtmp.youtube.com/live2?backup=1/%d"
+  },
+}

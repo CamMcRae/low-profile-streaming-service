@@ -1,11 +1,9 @@
 {
+  "draw_mouse": "1",
   "framerate": "30",
   "video_size": "",
   "offset_x": "0",
   "offset_y": "0",
   "show_region": "0",
-  "i": "desktop",
-  "vcodec": "libx264",
-  "preset": "veryfast",
-  "vf": "scale=%d:-1,format=yuv420p"
+  "i": "desktop"
 }

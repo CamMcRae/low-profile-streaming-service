@@ -1,11 +1,21 @@
 {
   "hide_banner": "",
-  "loglevel": "panic",
+  "loglevel": "warning",
   "f-gdigrab": {
     "framerate": "30",
     "show_region": "1",
-    "i": "desktop",
-    "vcodec": "libx264",
-    "preset": "veryfast"
-  }
+    "i": "desktop"
+  },
+  "re": "",
+  "f-lavfi": {
+    "i": "anullsrc"
+  },
+  "c:v": "libx264",
+  "c:a": "aac",
+  "crf": "23",
+  "b:v": "2500k",
+  "maxrate": "2500k",
+  "bufsize": "5000k",
+  "preset": "ultrafast",
+  "vf": "format=yuv420p"
 }
