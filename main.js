@@ -146,8 +146,14 @@ const beginStream = (_outputString) => {
     }
     return str.replace(/\ +/g, " ");
   };
+  // if custom settings doesnt exist, use defaults
+  let json_in
+  if (fs.existsSync('./settings_custom.json')) {
+    json_in = require("./settings_custom.json");
+  } else {
+    json_in = require("./settings_default.json");
+  }
 
-  const json_in = require("./ffmpeg_settings.json");
   let ff_settings = constructString(json_in) + _outputString;
   if (flags.verbose) console.log(verb(ff_settings));
 
