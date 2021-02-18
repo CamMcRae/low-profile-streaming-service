@@ -1,4 +1,6 @@
 /output
+/build
+stream_key.txt
 
 # Logs
 logs

@@ -12,13 +12,14 @@ const {
 // node packages
 const dotenv = require("dotenv").config();
 const chalk = require("chalk");
-require("json5/lib/register"); // register json5 files
 
 // modules
 const {
   prompt,
   getFileName
 } = require("./util");
+
+const beginStream = require('./stream.js')
 
 // chalk macros
 const verb = chalk.green;
@@ -96,7 +97,7 @@ const streamOutput = async () => {
     } else {
       // default to youtube stream
       // get ingest server
-      ingestServer = require("./ingest_servers.json5").youtube;
+      ingestServer = require("./ingest_servers.json").youtube;
       // get stream key
       if (streamKey == -1) {
         // if no streamkey entered on start
@@ -116,76 +117,6 @@ const streamOutput = async () => {
     // create output string
     let outputSettings = `-f flv ${ingestServer.main}`;
     resolve(outputSettings);
-  });
-};
-
-// main streaming function
-const beginStream = (_outputString) => {
-  // recursively builds the config string as laid out in settings.json
-  const constructString = (_obj) => {
-    if (typeof _obj == "string") {
-      const type = _obj.match(/(a|v)\w+_device+/g);
-      if (!type) return _obj;
-      type.forEach((e) => {
-        _obj = _obj.replace(e, `"${require("./user_settings.json")[e]}"`);
-      });
-      return _obj;
-    }
-    const entries = Object.keys(_obj);
-    let str = "";
-    if (entries.length > 0) {
-      for (let entry of entries) {
-        if (entry.startsWith("//")) continue; // commented out pieces
-        if (entry != "&") str += "-"; // entry is empty
-        str += entry.split("-").join(" ").split("&")[0]; // strip everything after '&'
-        str += ` ${constructString(_obj[entry])} `;
-      }
-    }
-    return str.replace(/\ +/g, " ");
-  };
-
-  // if custom settings doesnt exist, use defaults
-  let json_in
-  if (fs.existsSync('./settings_custom.json')) {
-    json_in = require("./settings_custom.json");
-  } else {
-    json_in = require("./settings_default.json");
-  }
-
-  let ff_settings = constructString(json_in) + _outputString;
-  if (flags.verbose) console.log(verb(ff_settings));
-
-  // cli stdio
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  // start readline and pause when ffmpeg outputs
-  const proc = exec(`ffmpeg ${ff_settings}`);
-
-  proc.stdout.on("data", (data) => {
-    console.log(cerr(`${data}`));
-  });
-
-  proc.stderr.on("data", (data) => {
-    console.log(`${data}`);
-  });
-
-  proc.on("close", (code) => {
-    console.log(warn("FFMPEG Stopped"));
-    console.log(`Exit code: ${code}`);
-    rl.close();
-  });
-
-  // scans for stop
-  rl.on("line", (_line) => {
-    if (_line == "stop") {
-      proc.stdin.write("q");
-      console.log(`Stopping FFMPEG process...`);
-    } else {
-      console.log(`Type stop to end ${flags.file ? "recording" : "streaming"}`);
-    }
   });
 };
 
